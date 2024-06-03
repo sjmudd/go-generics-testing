@@ -10,13 +10,11 @@ type Row interface {
 	Subtract(Row) Row // subtracts the value1s from the given named row from the current one returning the difference
 }
 
-type Rows []Row // to simplify slice naming
-
 // Subtract compares 2 slices by Key()
 // - for each matching key calculates initial[x] - reduce[y]
 // - if we do not find a matching row initial[x] is returned unchanged
 // - return the full list of initial with subtractions applied.
-func Subtract[T Rows](initial T, reduce T) T {
+func Subtract[T []Row](initial T, reduce T) T {
 	subtraction := make(T, len(reduce))
 
 	// iterate over rows to provide an index by name of the rows slice
@@ -44,7 +42,6 @@ type SampleRow struct {
 	// ...
 	valuen int
 }
-type SampleRows []SampleRow
 
 func (s SampleRow) Key() string {
 	return s.name
@@ -62,12 +59,12 @@ func (s SampleRow) Subtract(other SampleRow) SampleRow {
 // ------- testing to see if we can use Subtract() on SampleRows --------
 
 func main() {
-	a := SampleRows{
+	a := []SampleRow{
 		{name: "a", value1: 10 /* ... */, valuen: 0},
 		{name: "b", value1: 20 /* ... */, valuen: 0},
 		{name: "c", value1: 30 /* ... */, valuen: 0},
 	}
-	b := SampleRows{
+	b := []SampleRow{
 		{name: "c", value1: 3 /* ... */, valuen: 0},
 		{name: "b", value1: 2 /* ... */, valuen: 0},
 	}
@@ -76,7 +73,7 @@ func main() {
 	fmt.Printf("b: %+v\n", b)
 
 	// SampleRows does now satisfy Rows (SampleRows missing in whatever.Rows)
-	c := Subtract[SampleRows](a, b)
+	c := Subtract[[]SampleRow](a, b)
 	fmt.Printf("c: %+v\n", c)
 
 	/* Expected output would be something like:
