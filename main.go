@@ -13,8 +13,8 @@ type Row interface {
 type Rows []Row // to simplify slice naming
 
 // Subtract compares 2 slices by Key()
-// - for each matching key calculates initial[x] - rows[y]
-// - if we not find a matching row initial[x] is returned unchanged
+// - for each matching key calculates initial[x] - reduce[y]
+// - if we do not find a matching row initial[x] is returned unchanged
 // - return the full list of initial with subtractions applied.
 func Subtract[T Rows](initial T, reduce T) T {
 	subtraction := make(T, len(reduce))
