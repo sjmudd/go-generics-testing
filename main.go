@@ -7,7 +7,7 @@ import (
 // Single row interface
 type Row interface {
 	Key() string      // returns a key when searching for a row
-	Subtract(Row) Row // subtracts the values from the given named row from the current one returning the difference
+	Subtract(Row) Row // subtracts the value1s from the given named row from the current one returning the difference
 }
 
 type Rows []Row // to simplify slice naming
@@ -39,8 +39,10 @@ func Subtract[T Rows](initial T, reduce T) T {
 // ------- test struct --------
 
 type SampleRow struct {
-	name  string
-	value int
+	name   string
+	value1 int
+	// ...
+	valuen int
 }
 type SampleRows []SampleRow
 
@@ -50,8 +52,10 @@ func (s SampleRow) Key() string {
 
 func (s SampleRow) Subtract(other SampleRow) SampleRow {
 	return SampleRow{
-		name:  s.name,
-		value: s.value - other.value,
+		name:   s.name,
+		value1: s.value1 - other.value1,
+		// ...
+		valuen: s.valuen - other.valuen,
 	}
 }
 
@@ -59,13 +63,13 @@ func (s SampleRow) Subtract(other SampleRow) SampleRow {
 
 func main() {
 	a := SampleRows{
-		{name: "a", value: 10},
-		{name: "b", value: 20},
-		{name: "c", value: 30},
+		{name: "a", value1: 10 /* ... */, valuen: 0},
+		{name: "b", value1: 20 /* ... */, valuen: 0},
+		{name: "c", value1: 30 /* ... */, valuen: 0},
 	}
 	b := SampleRows{
-		{name: "c", value: 3},
-		{name: "b", value: 2},
+		{name: "c", value1: 3 /* ... */, valuen: 0},
+		{name: "b", value1: 2 /* ... */, valuen: 0},
 	}
 
 	fmt.Printf("a: %+v\n", a)
@@ -75,11 +79,11 @@ func main() {
 	c := Subtract[SampleRows](a, b)
 	fmt.Printf("c: %+v\n", c)
 
-	/* expected output would be something like:
-	      []SampleRows{
-			{"a": 10},
-			{"b": 18},
-			{"c": 27},
-	     }
+	/* Expected output would be something like:
+	[]SampleRows{
+		{"value1": 10, ..., "valuen": 0},
+		{"value1": 18, ..., "valuen": 0},
+		{"value1": 27, ..., "valuen": 0},
+	}
 	*/
 }
